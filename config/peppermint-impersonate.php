@@ -4,14 +4,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Admin role
+    | Who may impersonate — the admin gate
     |--------------------------------------------------------------------------
     |
-    | The Spatie role a user must have to be allowed to impersonate others.
-    | Users with this role can start impersonation; users with this role can
-    | NOT be impersonated (prevents admin-to-admin privilege escalation).
+    | A user may impersonate others when they are considered an "admin", and a
+    | user can never be impersonated when they are an admin (prevents
+    | admin→admin privilege escalation).
+    |
+    | The admin check is resolved in this precedence (first match wins), so the
+    | package works whether or not the app uses spatie/laravel-permission:
+    |
+    |   1. admin_method  — a no-arg boolean method on the user model,
+    |                       e.g. 'isAdmin' / 'isAdministrator'
+    |   2. admin_ability — a Gate ability checked via Gate::forUser($user)
+    |   3. admin_role    — a role name checked via $user->hasRole($role)
+    |                       (Spatie, or any model exposing hasRole(string))
+    |
+    | Set exactly the one that fits your app; leave the others null. Values must
+    | be plain strings (no closures) so config caching keeps working.
     |
     */
+    'admin_method' => env('IMPERSONATE_ADMIN_METHOD'),
+    'admin_ability' => env('IMPERSONATE_ADMIN_ABILITY'),
     'admin_role' => env('IMPERSONATE_ADMIN_ROLE', 'admin'),
 
     /*
@@ -29,9 +43,6 @@ return [
     |--------------------------------------------------------------------------
     | Redirects
     |--------------------------------------------------------------------------
-    |
-    | Where to send the browser after starting / leaving impersonation.
-    |
     */
     'take_redirect_to' => '/',
     'leave_redirect_to' => '/',
@@ -40,11 +51,6 @@ return [
     |--------------------------------------------------------------------------
     | Route registration
     |--------------------------------------------------------------------------
-    |
-    | Toggle the package's built-in web routes (impersonate.take / .leave) and
-    | the middleware applied to them. The routes are always gated to the admin
-    | role inside the controller regardless of this middleware list.
-    |
     */
     'register_routes' => true,
     'route_middleware' => ['web', 'auth'],

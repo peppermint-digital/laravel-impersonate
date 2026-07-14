@@ -47,19 +47,36 @@ class User extends Authenticatable
 }
 ```
 
-### 2. Config (optional)
+### 2. Config — pick your admin gate
 
 ```bash
 php artisan vendor:publish --tag=peppermint-impersonate-config
 ```
 
+Who may impersonate is resolved in precedence `admin_method → admin_ability →
+admin_role` (first configured wins), so the package works with or without
+spatie/laravel-permission. Set the one that fits, leave the rest null:
+
 ```php
 // config/peppermint-impersonate.php
-'admin_role'       => env('IMPERSONATE_ADMIN_ROLE', 'admin'),
-'user_model'       => null,   // defaults to the auth provider model
+
+// a) Spatie (or any hasRole(string) model):
+'admin_role'   => 'admin',          // or 'administrator', 'super-admin', …
+
+// b) a boolean method on the user model:
+'admin_method' => 'isAdmin',        // or 'isAdministrator', …
+
+// c) a Gate ability:
+'admin_ability' => 'impersonate-users',
+
+'user_model'       => null,          // defaults to the auth provider model
 'take_redirect_to' => '/',
 'leave_redirect_to'=> '/',
 ```
+
+Values are plain strings (no closures) so config caching keeps working. Need
+custom logic? Override `canImpersonate()` / `canBeImpersonated()` on your User
+model — the class method wins over the trait.
 
 ### 3. Share state with the frontend
 
@@ -71,19 +88,28 @@ use Peppermint\Impersonate\Support\Impersonation;
 'impersonating' => Impersonation::state(),
 ```
 
-### 4. Banner component
+### 4. Banner component (React or Vue)
 
 ```bash
+# React (Inertia)
 php artisan vendor:publish --tag=peppermint-impersonate-react
+# Vue 3 (Inertia)
+php artisan vendor:publish --tag=peppermint-impersonate-vue
 ```
 
-Renders `resources/js/components/impersonation-banner.tsx`. Drop it high in your
-app layout:
+Renders `resources/js/components/impersonation-banner.tsx` or
+`ImpersonationBanner.vue`. Drop it high in your app layout:
 
 ```tsx
+// React
 import ImpersonationBanner from '@/components/impersonation-banner';
-
 <ImpersonationBanner />
+```
+
+```vue
+<!-- Vue -->
+<script setup>import ImpersonationBanner from '@/components/ImpersonationBanner.vue';</script>
+<template><ImpersonationBanner /></template>
 ```
 
 ### 5. Trigger it

@@ -28,6 +28,10 @@ class ImpersonateServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../stubs/impersonation-banner.tsx' => resource_path('js/components/impersonation-banner.tsx'),
             ], 'peppermint-impersonate-react');
+
+            $this->publishes([
+                __DIR__.'/../stubs/ImpersonationBanner.vue' => resource_path('js/components/ImpersonationBanner.vue'),
+            ], 'peppermint-impersonate-vue');
         }
     }
 }
