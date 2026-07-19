@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 
 type ImpersonationState = {
     active: boolean;
@@ -31,12 +31,17 @@ export function ImpersonationBanner() {
                 Viewing as <strong>{target}</strong>
                 {admin ? <span className="opacity-70"> — signed in as {admin}</span> : null}
             </span>
-            <Link
+            {/* Native <a> (full page load), NOT an Inertia <Link>: leaving
+                impersonation switches the session identity back to the admin.
+                An SPA visit would keep Inertia's prefetch/history cache built as
+                the impersonated user, so a stale page (wrong identity, no banner)
+                could be shown until a hard refresh. A full load resets that cache. */}
+            <a
                 href={impersonating.leave_url}
                 className="ml-2 rounded-md bg-amber-950/10 px-2.5 py-1 font-semibold underline-offset-2 hover:bg-amber-950/20 hover:underline"
             >
                 Leave
-            </Link>
+            </a>
         </div>
     );
 }

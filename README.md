@@ -114,10 +114,15 @@ import ImpersonationBanner from '@/components/impersonation-banner';
 
 ### 5. Trigger it
 
-Link admins to the take route from your user admin list:
+Link admins to the take route from your user admin list. Use a **plain `<a>` (full
+page load), not an Inertia `<Link>`** — starting impersonation switches the session
+identity, so the whole SPA must reload. An in-app visit would keep Inertia's
+prefetch/history cache (built as the admin) and could show a stale page until a hard
+refresh. The same applies to the banner's "Leave" link (already a plain `<a>` in the
+stub):
 
 ```tsx
-<Link href={`/impersonate/take/${user.id}`}>View as</Link>
+<a href={`/impersonate/take/${user.id}`}>View as</a>
 ```
 
 ## Routes

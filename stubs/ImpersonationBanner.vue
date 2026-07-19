@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { usePage, Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 
 type ImpersonationState = {
     active: boolean;
@@ -35,11 +35,16 @@ const admin = computed(() => state.value?.impersonator?.name || state.value?.imp
             Viewing as <strong>{{ target }}</strong>
             <span v-if="admin" class="opacity-70"> — signed in as {{ admin }}</span>
         </span>
-        <Link
+        <!-- Native <a> (full page load), NOT an Inertia <Link>: leaving
+             impersonation switches the session identity back to the admin.
+             An SPA visit would keep Inertia's prefetch/history cache built as
+             the impersonated user, so a stale page (wrong identity, no banner)
+             could be shown until a hard refresh. A full load resets that cache. -->
+        <a
             :href="state.leave_url"
             class="ml-1 rounded-md bg-amber-950/10 px-2.5 py-1 font-semibold underline-offset-2 hover:bg-amber-950/20 hover:underline"
         >
             Leave
-        </Link>
+        </a>
     </div>
 </template>
