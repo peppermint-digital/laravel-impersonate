@@ -88,28 +88,20 @@ use Peppermint\Impersonate\Support\Impersonation;
 'impersonating' => Impersonation::state(),
 ```
 
-### 4. Banner component (React or Vue)
+### 4. Banner component
 
 ```bash
 # React (Inertia)
 php artisan vendor:publish --tag=peppermint-impersonate-react
-# Vue 3 (Inertia)
-php artisan vendor:publish --tag=peppermint-impersonate-vue
 ```
 
-Renders `resources/js/components/impersonation-banner.tsx` or
-`ImpersonationBanner.vue`. Drop it high in your app layout:
+Renders `resources/js/components/impersonation-banner.tsx`. Drop it high in
+your app layout:
 
 ```tsx
 // React
 import ImpersonationBanner from '@/components/impersonation-banner';
 <ImpersonationBanner />
-```
-
-```vue
-<!-- Vue -->
-<script setup>import ImpersonationBanner from '@/components/ImpersonationBanner.vue';</script>
-<template><ImpersonationBanner /></template>
 ```
 
 ### 5. Trigger it
