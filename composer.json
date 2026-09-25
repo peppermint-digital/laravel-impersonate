@@ -2,7 +2,7 @@
     "name": "peppermint/impersonate",
     "description": "Admin impersonation for Peppermint Laravel apps — a thin wrapper around lab404/laravel-impersonate with Spatie role gating and Inertia banner support.",
     "type": "library",
-    "license": "proprietary",
+    "license": "MIT",
     "keywords": [
         "laravel",
         "impersonate",
